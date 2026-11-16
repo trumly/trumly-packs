@@ -1,0 +1,16 @@
+name: Pack request
+description: Ask for a pack, or for something to be added to one.
+labels: [pack-request]
+body:
+  - type: textarea
+    id: design
+    attributes:
+      label: The kind of design
+      description: What you are designing, and what you could not describe or check with the packs that exist.
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: What the pack would hold
+      description: The types, link types and rules you have in mind, if you know them.

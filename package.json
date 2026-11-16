@@ -1,0 +1,42 @@
+{
+  "name": "trumly-packs",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "description": "Verified and community packs for trumly. The official packs live in trumly-spec.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "lock": "node scripts/check.mjs --update-lock",
+    "pack": "node scripts/check.mjs --pack",
+    "test": "node --test tests/*.test.mjs",
+    "sign:packs": "node scripts/sign.mjs",
+    "publish:packs": "node scripts/publish.mjs",
+    "lint": "eslint .",
+    "sync:lint": "node scripts/sync-lint.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@vercel/blob": "2.9.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-svelte": "^3.24.0",
+    "globals": "^15.15.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-svelte": "^3.5.2",
+    "svelte": "^5.57.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.1"
+  },
+  "overrides": {
+    "zod": "^4.6.7",
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.1"
+    }
+  }
+}

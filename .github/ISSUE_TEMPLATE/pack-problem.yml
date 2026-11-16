@@ -1,0 +1,23 @@
+name: Pack problem
+description: A pack has a wrong or missing type, link type, rule or plane, or does not check clean.
+labels: [pack-problem]
+body:
+  - type: input
+    id: pack
+    attributes:
+      label: Pack and version
+      description: For example core@1.0.0.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Smallest example
+      description: The smallest project that shows it, and the output you expected.
+      render: markdown

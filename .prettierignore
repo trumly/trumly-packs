@@ -1,0 +1,24 @@
+node_modules
+dist
+dist-embed
+build
+.svelte-kit
+.vercel
+.data
+static
+public
+vendor
+package-lock.json
+*.tgz
+eslint.shared.mjs
+prettier.config.mjs
+
+# repo-specific data: trumly-packs pack files are checksummed; never reformat
+packs
+registry.lock.json
+
+# generated/synced artefacts (do not hand-format)
+src/lib/server/editor.html
+src/lib/server/registry.json
+src/lib/server/wasm.ts
+**/src/lib/generated

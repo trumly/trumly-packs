@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question about the specification
+    url: https://github.com/trumly/trumly-spec/discussions
+    about: Questions about the format, rules or checks go to the specification repository.
+  - name: Security problem
+    url: https://github.com/trumly/trumly-packs/security/advisories/new
+    about: Report a vulnerability privately. Please do not open a public issue.
