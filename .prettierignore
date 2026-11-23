@@ -22,3 +22,9 @@ src/lib/server/editor.html
 src/lib/server/registry.json
 src/lib/server/wasm.ts
 **/src/lib/generated
+
+# the spec site's copies of files that live in trumly-spec (made by sync:docs and sync:spec): they change when the spec does
+apps/spec/content/format.md
+apps/spec/src/lib/cases.json
+apps/spec/src/lib/spec-facts.json
+apps/site/content/docs/quickstart.md
