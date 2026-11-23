@@ -2,12 +2,26 @@
 
 Verified and community packs for [trumly](https://spec.trumly.co/registry). This repository is the source of truth for every pack, including the **core** packs that are built into the trumly binary (`trumly-spec` copies the pinned versions listed in its `packs/core.pin`).
 
-A pack is data, never code: a folder of Markdown files defining types, link types, rules and planes. Publishing your own pack is not open yet, and how it will work is not decided ([what is not decided yet](https://spec.trumly.co/about#not-decided)).
+A pack is data, never code: a folder of Markdown files defining types, link types, rules, planes and derived values, with patterns and examples that show how to use them. Publishing your own pack is not open yet, and how it will work is not decided ([what is not decided yet](https://spec.trumly.co/about#not-decided)).
 
-    packs/<name>/meta.json          { "tier": "community" }   (maintainers set "verified" after review)
-    packs/<name>/<version>/<ns>--pack.md   role: core | enrichment, publisher, use-when, default-pattern (optional), starter-patterns (optional), enriches, requires: [core@1]
-    packs/<name>/<version>/*.md     the pack's nodes, including <ns>--pack.md, the manifest
-    registry.lock.json              the checksum of every published version (updated by the maintainers)
+    packs/<name>/meta.json                    the tier, links and retirement notes (below); not part of any version's checksum
+    packs/<name>/<version>/<ns>--pack.md      the manifest: role (core or enrichment), publisher, use-when, requires, optional, enriches,
+                                              default-pattern and starter-patterns (the fields are in the specification, section 4)
+    packs/<name>/<version>/<ns>--*.md         the definitions: planes, types, link types, rules and derived values
+    packs/<name>/<version>/patterns/<name>/   a pattern: pattern.md and the nodes it adds to a project
+    packs/<name>/<version>/examples/<name>/   an example: example.md and a whole small project that checks clean
+    packs/<name>/tests/<rule-id>.json         tests for one rule (see "Testing your pack")
+    registry.lock.json                        the checksum of every published version (updated by the maintainers)
+
+Every node a pack defines is named `<ns>--<local>` (the namespace is the pack's own prefix) and carries `pack: <name>@<version>`. A pack must have at least one example. The format of all of this is in the [specification](https://spec.trumly.co/specification).
+
+### Derived values
+
+A pack can ship `derived` definitions: a value a node has but nobody writes, worked out from a template over its fields and links, such as the address of an endpoint or the name a Kubernetes object has in each environment. Several packs use one called `handle`, so a single choice of label shows every calculated name. Templates follow at most five links, and the specification (section 7a) gives the rules.
+
+### Patterns and examples
+
+A **pattern** is a starting point someone adds to a project and makes their own; an **example** shows the pack in use and is checked against every rule the pack and the packs it requires have, so a rule that its own example breaks does not ship. Examples line up with the one worked example the core packs share, a status API for operations staff, so they read as parts of one design.
 
 ## How packs are published
 
