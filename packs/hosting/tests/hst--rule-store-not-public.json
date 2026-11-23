@@ -1,0 +1,59 @@
+{
+  "rule": "hst--rule-store-not-public",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {},
+          "links": [
+            {
+              "type": "placed-in",
+              "to": "z1"
+            }
+          ]
+        },
+        {
+          "id": "z1",
+          "type": "network-zone",
+          "fields": {
+            "exposure": "private"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {},
+          "links": [
+            {
+              "type": "placed-in",
+              "to": "z1"
+            }
+          ]
+        },
+        {
+          "id": "z1",
+          "type": "network-zone",
+          "fields": {
+            "exposure": "public"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    }
+  ]
+}

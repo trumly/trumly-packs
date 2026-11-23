@@ -1,0 +1,43 @@
+{
+  "rule": "dm--rule-names-fit-limit",
+  "cases": [
+    {
+      "name": "names-over-limit",
+      "nodes": [
+        {
+          "id": "table-accents",
+          "type": "data-table",
+          "title": "éééééééééééééééééééééééééééééééééééééééé",
+          "plane": "dm--physical"
+        },
+        {
+          "id": "table-exact",
+          "type": "data-table",
+          "title": "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "plane": "dm--physical"
+        },
+        {
+          "id": "table-long",
+          "type": "data-table",
+          "title": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "plane": "dm--physical"
+        },
+        {
+          "id": "table-ok",
+          "type": "data-table",
+          "title": "job_event",
+          "plane": "dm--physical"
+        }
+      ],
+      "pass": [
+        "table-ok",
+        "table-exact"
+      ],
+      "fail": [
+        "table-long",
+        "table-accents"
+      ],
+      "note": "63 bytes is the limit: 64 ASCII letters fail, and so do 40 accented letters (40 characters, 80 bytes)"
+    }
+  ]
+}

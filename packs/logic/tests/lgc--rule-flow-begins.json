@@ -1,0 +1,98 @@
+{
+  "rule": "lgc--rule-flow-begins",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "f1",
+          "type": "flow",
+          "fields": {},
+          "links": [
+            {
+              "type": "begins-at",
+              "to": "s1"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "start"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "f1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "f1",
+          "type": "flow",
+          "fields": {},
+          "links": [
+            {
+              "type": "begins-at",
+              "to": "s1"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "action"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "f1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "f1",
+          "type": "flow",
+          "fields": {},
+          "links": [
+            {
+              "type": "begins-at",
+              "to": "s1"
+            },
+            {
+              "type": "begins-at",
+              "to": "s2"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "start"
+          },
+          "links": []
+        },
+        {
+          "id": "s2",
+          "type": "step",
+          "fields": {
+            "kind": "start"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "f1"
+      ]
+    }
+  ]
+}

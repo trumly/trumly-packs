@@ -1,0 +1,69 @@
+{
+  "rule": "mcp--rule-tool-name-fits",
+  "cases": [
+    {
+      "name": "tool-name-over-limit",
+      "nodes": [
+        {
+          "id": "srv",
+          "type": "mcp-server",
+          "title": "ops",
+          "plane": "mcp--surface",
+          "fields": {
+            "transport": "stdio",
+            "trust": "first-party"
+          },
+          "links": [
+            {
+              "to": "tool-long",
+              "type": "offers"
+            },
+            {
+              "to": "tool-ok",
+              "type": "offers"
+            },
+            {
+              "to": "tool-exact",
+              "type": "offers"
+            }
+          ]
+        },
+        {
+          "id": "tool-exact",
+          "type": "mcp-tool",
+          "title": "tttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "plane": "mcp--surface",
+          "fields": {
+            "effect": "read"
+          }
+        },
+        {
+          "id": "tool-long",
+          "type": "mcp-tool",
+          "title": "ttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
+          "plane": "mcp--surface",
+          "fields": {
+            "effect": "read"
+          }
+        },
+        {
+          "id": "tool-ok",
+          "type": "mcp-tool",
+          "title": "list_jobs",
+          "plane": "mcp--surface",
+          "fields": {
+            "effect": "read"
+          }
+        }
+      ],
+      "pass": [
+        "tool-ok",
+        "tool-exact"
+      ],
+      "fail": [
+        "tool-long"
+      ],
+      "note": "the name is mcp__ops__ (10 characters) plus the tool title: a 54-letter tool gives exactly 64 and a 55-letter tool gives 65"
+    }
+  ]
+}

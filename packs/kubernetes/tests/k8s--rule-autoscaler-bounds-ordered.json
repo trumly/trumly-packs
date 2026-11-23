@@ -1,0 +1,55 @@
+{
+  "rule": "k8s--rule-autoscaler-bounds-ordered",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "h1",
+          "type": "autoscaler",
+          "fields": {
+            "min-replicas": 2,
+            "max-replicas": 5
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "h1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "h1",
+          "type": "autoscaler",
+          "fields": {
+            "min-replicas": 6,
+            "max-replicas": 5
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "h1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "h1",
+          "type": "autoscaler",
+          "fields": {
+            "min-replicas": 2
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "h1"
+      ]
+    }
+  ]
+}

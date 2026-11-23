@@ -1,0 +1,100 @@
+{
+  "rule": "pln--rule-agent-work-reviewed",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "w1",
+          "type": "work-package",
+          "fields": {},
+          "links": [
+            {
+              "type": "owned-by",
+              "to": "t1"
+            }
+          ]
+        },
+        {
+          "id": "t1",
+          "type": "team",
+          "fields": {
+            "kind": "human"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "w1"
+      ]
+    },
+    {
+      "name": "pass 2",
+      "nodes": [
+        {
+          "id": "w1",
+          "type": "work-package",
+          "fields": {},
+          "links": [
+            {
+              "type": "reviewed-by",
+              "to": "t1"
+            }
+          ]
+        },
+        {
+          "id": "t1",
+          "type": "team",
+          "fields": {
+            "kind": "human"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "w1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "w1",
+          "type": "work-package",
+          "fields": {},
+          "links": [
+            {
+              "type": "owned-by",
+              "to": "t1"
+            }
+          ]
+        },
+        {
+          "id": "t1",
+          "type": "team",
+          "fields": {
+            "kind": "agent"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "w1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "w1",
+          "type": "work-package",
+          "fields": {},
+          "links": []
+        }
+      ],
+      "fail": [
+        "w1"
+      ]
+    }
+  ]
+}

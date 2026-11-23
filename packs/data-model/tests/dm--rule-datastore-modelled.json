@@ -1,0 +1,75 @@
+{
+  "rule": "dm--rule-datastore-modelled",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {
+            "kind": "relational"
+          },
+          "links": []
+        },
+        {
+          "id": "db1",
+          "type": "data-database",
+          "fields": {},
+          "links": [
+            {
+              "type": "details",
+              "to": "s1"
+            }
+          ]
+        }
+      ],
+      "pass": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {
+            "kind": "relational"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {
+            "kind": "relational"
+          },
+          "links": []
+        },
+        {
+          "id": "db1",
+          "type": "data-database",
+          "fields": {},
+          "links": [
+            {
+              "type": "details",
+              "to": "other"
+            }
+          ]
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    }
+  ]
+}

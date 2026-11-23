@@ -29,8 +29,14 @@ export interface Pack {
   enriches: string[];
   /** one sentence on when to reach for the pack */
   useWhen: string;
+  /** the pattern (a folder under `patterns/`) to lift as "another one" when the pack is used many times in a project */
+  defaultPattern?: string;
+  /** the patterns (folders under `patterns/`) offered with "Include starter patterns" when the pack is added; the default pattern alone when this is empty */
+  starterPatterns: string[];
   /** the short prefix of every node id this pack provides: `<namespace>--<local id>` */
   namespace: string;
+  /** packs this one works with when the project has them: never installed by adding this pack, never needed for it to load */
+  optional: string[];
   requires: string[];
   includes: string[];
   /** [node id, file text], the manifest included */
@@ -53,6 +59,8 @@ export interface Sample {
   usage: 'starter' | 'inspiration';
   /** packs it needs to check clean, its own pack included */
   requires: string[];
+  /** packs it also uses when the project has them: the nodes that need one are left out of a project without it */
+  optional: string[];
   /** patterns only: the node the rest hangs from, and the id prefix used on insert */
   root?: string;
   prefix?: string;
@@ -60,12 +68,12 @@ export interface Sample {
   nodes: NodeJson[];
 }
 
-/** `code` marks findings a library may treat more strictly: `collision` (one name, two meanings) and `near-name` (names easy to mix up) */
+/** `code` marks findings a library may treat more strictly: `near-name` (names easy to mix up). The same name in two packs is allowed: a project writes `<namespace>:<name>`. */
 export interface Problem {
   pack: string;
   severity: 'error' | 'warning';
   message: string;
-  code?: 'collision' | 'near-name';
+  code?: 'near-name';
   /** the other pack in a clash */ other?: string;
 }
 
@@ -77,7 +85,7 @@ export type ReadNodes = (
   | Promise<{ nodes: NodeJson[]; bad: { file: string; kind: string }[] }>;
 
 /** What a pack may carry: its own definitions, never ordinary nodes. */
-export const DEFINITION_KINDS = ['type', 'link-type', 'rule', 'plane'];
+export const DEFINITION_KINDS = ['type', 'link-type', 'rule', 'plane', 'derived'];
 
 export const tagOf = (p: { name: string; version: string }) => `${p.name}@${p.version}`;
 export const splitReq = (r: string): [string, string] => {
@@ -200,7 +208,10 @@ export async function packFromTexts(label: string, allItems: [string, string][],
     role: str(manifest.fields.role) ?? 'enrichment',
     enriches: strs(manifest.fields.enriches),
     useWhen: str(manifest.fields['use-when']) ?? '',
+    defaultPattern: str(manifest.fields['default-pattern'])?.trim() || undefined,
+    starterPatterns: strs(manifest.fields['starter-patterns']),
     requires: strs(manifest.fields.requires),
+    optional: strs(manifest.fields.optional),
     includes: strs(manifest.fields.includes),
     files,
     nodes: ordered,
@@ -240,6 +251,7 @@ async function readSamples(label: string, items: [string, string][], read: ReadN
       description: str(manifest.fields.description) ?? '',
       usage,
       requires: strs(manifest.fields.requires),
+      optional: strs(manifest.fields.optional),
       root,
       prefix: str(manifest.fields.prefix),
       nodes: rest
@@ -261,6 +273,11 @@ export function sampleProblems(all: Pack[]): Problem[] {
     for (const s of p.samples) {
       if (!s.nodes.length) push('error', `The ${s.kind} “${s.name}” has no nodes.`);
       if (!s.description.trim()) push('warning', `The ${s.kind} “${s.name}” needs a description saying what it shows.`);
+      for (const o of s.optional) {
+        const n = splitReq(o)[0];
+        if (!all.some(q => q.name === n))
+          push('warning', `The ${s.kind} “${s.name}” lists “${n}” in optional, which is not a pack in the library.`);
+      }
     }
   }
   return out;
@@ -269,12 +286,14 @@ export function sampleProblems(all: Pack[]): Problem[] {
 /** The lightweight view of a pack's samples: enough to list and choose from. */
 export function samplesOf(p: Pack) {
   return p.samples.map(s => ({
+    default: s.kind === 'pattern' && s.name === p.defaultPattern,
     kind: s.kind,
     name: s.name,
     title: s.title,
     description: s.description,
     use: s.usage,
     requires: s.requires,
+    optional: s.optional,
     root: s.root ?? null,
     nodes: s.nodes.length
   }));
@@ -346,6 +365,19 @@ export const USE_WHEN_MAX = 200;
  * the core (`requires: core@1`) so its definitions have something to attach to. Mirrors `manifest_problems` in trumly-spec.
  */
 function manifestProblems(all: Pack[], p: Pack, push: (severity: Problem['severity'], message: string) => void) {
+  if (p.defaultPattern && !p.samples.some(s => s.kind === 'pattern' && s.name === p.defaultPattern))
+    push(
+      'error',
+      `default-pattern names “${p.defaultPattern}”, which is not one of its patterns (a folder under patterns/).`
+    );
+  for (const s of p.starterPatterns)
+    if (!p.samples.some(x => x.kind === 'pattern' && x.name === s))
+      push('error', `starter-patterns names “${s}”, which is not one of its patterns (a folder under patterns/).`);
+  for (const r of p.optional) {
+    const n = splitReq(r)[0];
+    if (n !== p.name && !all.some(q => q.name === n))
+      push('warning', `optional names “${n}”, which is not a pack in the library.`);
+  }
   if (p.role === 'core') {
     if (p.publisher.trim() !== 'trumly')
       push('error', "It says role: core, which only trumly's own packs may. Use role: enrichment.");
@@ -403,7 +435,7 @@ export function lint(all: Pack[]): Problem[] {
       if (!DEFINITION_KINDS.includes(k))
         push(
           'error',
-          `“${n.id}” is an ordinary node (type ${k || 'none'}). A pack carries definitions only: types, link types, rules and planes.`
+          `“${n.id}” is an ordinary node (type ${k || 'none'}). A pack carries definitions only: types, link types, rules, planes and derived values.`
         );
     }
     if (!p.license.trim())
@@ -435,25 +467,28 @@ export function lint(all: Pack[]): Problem[] {
       }
     }
     const mine = reach(all, p.name);
-    for (const kind of ['type', 'link-type']) {
-      const label = kind === 'type' ? 'type' : 'link type';
-      for (const name of defined(p, kind)) {
-        for (const q of all.filter(q => q.name !== p.name && defined(q, kind).includes(name))) {
-          if (mine.has(q.name) || reach(all, q.name).has(p.name)) continue; // related packs share on purpose
-          push(
-            'warning',
-            `The ${label} “${name}” is also defined by ${q.name}, which this pack does not bring. Two meanings for one name in a project; prefix yours (for example ${p.namespace}-${name}) or share a base pack.`,
-            'collision',
-            q.name
-          );
-        }
-      }
-    }
     const known = new Set(defined(p, 'type'));
-    for (const q of all.filter(q => mine.has(q.name))) for (const t of defined(q, 'type')) known.add(t);
+    const worksWith = new Set(p.optional.map(r => splitReq(r)[0]));
+    for (const q of all.filter(q => mine.has(q.name) || worksWith.has(q.name)))
+      for (const t of defined(q, 'type')) known.add(t);
+    // `<namespace>:<name>` is known when the pack with that namespace defines the name
+    const qualified = (t: string) => {
+      const i = t.indexOf(':');
+      return i > 0 && all.some(q => q.namespace === t.slice(0, i) && defined(q, 'type').includes(t.slice(i + 1)));
+    };
+    const knownLinks = new Set(defined(p, 'link-type'));
+    for (const q of all.filter(q => mine.has(q.name) || worksWith.has(q.name)))
+      for (const l of defined(q, 'link-type')) knownLinks.add(l);
+    const linkKnown = (l: string) => {
+      const i = l.indexOf(':');
+      return (
+        knownLinks.has(l) ||
+        (i > 0 && all.some(q => q.namespace === l.slice(0, i) && defined(q, 'link-type').includes(l.slice(i + 1))))
+      );
+    };
     const seen = new Set<string>();
     const missing = (what: string, t: string) => {
-      if (t && !known.has(t) && !seen.has(`${what}/${t}`)) {
+      if (t && !known.has(t) && !qualified(t) && !seen.has(`${what}/${t}`)) {
         seen.add(`${what}/${t}`);
         push('warning', `${what} names the type “${t}”, which neither this pack nor the packs it relies on define.`);
       }
@@ -477,6 +512,19 @@ export function lint(all: Pack[]): Problem[] {
         const ts: string[] = [];
         if (n.fields.check !== undefined) typesIn(n.fields.check, ts);
         for (const t of ts) missing(what, t);
+      } else if (n.type === 'derived') {
+        const what = `The derived value “${name}”`;
+        const at = n.fields.applies_to?.type;
+        if (typeof at === 'string') missing(what, at);
+        for (const l of templateLinks(str(n.fields.template) ?? '')) {
+          if (!linkKnown(l) && !seen.has(`${what}/link/${l}`)) {
+            seen.add(`${what}/link/${l}`);
+            push(
+              'warning',
+              `${what} follows the link “${l}”, which neither this pack nor the packs it relies on define.`
+            );
+          }
+        }
       }
     }
   }
@@ -514,6 +562,19 @@ function near(a: string, b: string): boolean {
   return prev[b.length] <= 2;
 }
 
+/** The link names a derived template follows: every part of a `{a/b/field}` placeholder but the last, without a leading `^`. */
+export function templateLinks(template: string): string[] {
+  const out: string[] = [];
+  for (const m of template.matchAll(/\{([^{}]*)\}/g)) {
+    const parts = m[1].split('/');
+    for (const part of parts.slice(0, -1)) {
+      const l = part.replace(/^\^+/, '');
+      if (l && l !== '@type' && !out.includes(l)) out.push(l);
+    }
+  }
+  return out;
+}
+
 /** A short line per node the pack provides (the manifest left out), for looking inside a pack before adding it. */
 export function contents(p: Pack) {
   return p.nodes
@@ -529,7 +590,16 @@ export function contents(p: Pack) {
       order: Number.isInteger(n.fields.order) ? n.fields.order : null,
       from: n.fields.from ?? null,
       to: n.fields.to ?? null,
-      inverse: str(n.fields.inverse) ?? null
+      inverse: str(n.fields.inverse) ?? null,
+      template: str(n.fields.template) ?? null,
+      stack: str(n.fields.stack) ?? null,
+      severity: str(n.fields.severity) ?? null,
+      /** the plane a type is drawn on (a type's `plane` field) */
+      layer: str(n.fields.plane) ?? null,
+      shape: str(n.fields.shape) ?? null,
+      /** a plane's shapes by type name */
+      shapes: n.fields.shapes && typeof n.fields.shapes === 'object' ? n.fields.shapes : null,
+      applies: str((n.fields.applies_to as any)?.type) ?? null
     }))
     .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 }

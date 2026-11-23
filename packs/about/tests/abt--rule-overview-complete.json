@@ -1,0 +1,42 @@
+{
+  "rule": "abt--rule-overview-complete",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "overview",
+          "type": "overview",
+          "fields": {
+            "purpose": "p",
+            "audience": "a",
+            "owner": "o",
+            "stage": "s"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "overview"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "overview",
+          "type": "overview",
+          "fields": {
+            "purpose": "p",
+            "audience": "a",
+            "owner": "o"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "overview"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "rule": "lgc--rule-step-leads-on",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "action"
+          },
+          "links": [
+            {
+              "type": "next",
+              "to": "s2"
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "type": "step",
+          "fields": {
+            "kind": "end"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "action"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "decision"
+          },
+          "links": [
+            {
+              "type": "next",
+              "to": "gone"
+            }
+          ]
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    }
+  ]
+}

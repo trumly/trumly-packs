@@ -1,0 +1,76 @@
+{
+  "rule": "dm--rule-object-name-fits",
+  "cases": [
+    {
+      "name": "object-name-over-limit",
+      "nodes": [
+        {
+          "id": "col-accents",
+          "type": "data-column",
+          "title": "éééééééééééééééééééééééééééééééééééééééé",
+          "plane": "dm--physical",
+          "fields": {
+            "data_type": "text"
+          }
+        },
+        {
+          "id": "col-exact",
+          "type": "data-column",
+          "title": "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "plane": "dm--physical",
+          "fields": {
+            "data_type": "text"
+          }
+        },
+        {
+          "id": "col-long",
+          "type": "data-column",
+          "title": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "plane": "dm--physical",
+          "fields": {
+            "data_type": "text"
+          }
+        },
+        {
+          "id": "col-ok",
+          "type": "data-column",
+          "title": "job_id",
+          "plane": "dm--physical",
+          "fields": {
+            "data_type": "uuid"
+          }
+        },
+        {
+          "id": "database-long",
+          "type": "data-database",
+          "title": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "plane": "dm--physical"
+        },
+        {
+          "id": "database-ok",
+          "type": "data-database",
+          "title": "ops",
+          "plane": "dm--physical"
+        },
+        {
+          "id": "schema-long",
+          "type": "data-schema",
+          "title": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+          "plane": "dm--physical"
+        }
+      ],
+      "pass": [
+        "col-exact",
+        "col-ok",
+        "database-ok"
+      ],
+      "fail": [
+        "col-long",
+        "col-accents",
+        "schema-long",
+        "database-long"
+      ],
+      "note": "columns, schemas and databases are named by their title; 63 bytes is the limit, so 40 accented letters (80 bytes) fail"
+    }
+  ]
+}

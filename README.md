@@ -5,14 +5,14 @@ Verified and community packs for [trumly](https://spec.trumly.co/registry). This
 A pack is data, never code: a folder of Markdown files defining types, link types, rules and planes. Publishing your own pack is not open yet, and how it will work is not decided ([what is not decided yet](https://spec.trumly.co/about#not-decided)).
 
     packs/<name>/meta.json          { "tier": "community" }   (maintainers set "verified" after review)
-    packs/<name>/<version>/<ns>--pack.md   role: core | enrichment, publisher, use-when, enriches, requires: [core@1]
+    packs/<name>/<version>/<ns>--pack.md   role: core | enrichment, publisher, use-when, default-pattern (optional), starter-patterns (optional), enriches, requires: [core@1]
     packs/<name>/<version>/*.md     the pack's nodes, including <ns>--pack.md, the manifest
     registry.lock.json              the checksum of every published version (updated by the maintainers)
 
 ## How packs are published
 
 1. Checks run on every change: every pack loads, its types and links resolve, the lint passes, and no published version has changed. A change to a published version is a new version.
-2. New versions are recorded, with a checksum, in `registry.lock.json`.
+2. A version is locked when it is released, not while you work on it. `npm run mint -- <pack> [patch|minor|major]` starts the next version (a copy of the newest one with the version and every `pack:` tag updated); change it as often as you like, in a local dev server too. The release records its checksum in `registry.lock.json` (`npm run lock`), and from then on it cannot change. In CI an unlocked new version is an error; locally it is only a note.
 3. The packs are bundled and published by the maintainers, and listed with their tier at [spec.trumly.co/registry](https://spec.trumly.co/registry). Only the core bundle is built into the trumly binary; every other pack is fetched from here.
 
 ## Pack tiers
@@ -36,6 +36,55 @@ A pack's text is read by people's AI agents (through the MCP server), so a pack 
 Publishing your own pack and contributing are not open yet, and how they will work is not decided: see [what is not decided yet](https://spec.trumly.co/about#not-decided). When they open, every contribution will be reviewed by us before it is merged, and a contributor licence agreement must be signed first. Pull requests are closed automatically for now. Please [open an issue](../../issues/new/choose) to report a problem with a pack or ask for one.
 
 Security problems: see `SECURITY.md`.
+
+## Retiring a pack or a version
+
+A published version never changes, so a pack is retired in `packs/<name>/meta.json`, which sits outside the version folders and can change after a version is locked (it is not part of the checksum):
+
+    { "tier": "verified",
+      "deprecated": { "since": "2026-11-23", "replaced-by": "hosting", "note": "merged into hosting" },
+      "withdrawn":  { "0.2.0": "rules crash on empty links" } }
+
+- **`deprecated`** retires the whole pack. `since` is a date; `replaced-by` (a pack that must exist) and `note` are optional. The registry marks the pack and leaves it out of the browse list. It is not added to a project that does not have it (the editor and MCP refuse, naming the replacement). Projects that already have it keep working, can upgrade, and are told once.
+- **`withdrawn`** marks one version as defective, with the reason. It is refused when added, and a project that has it is warned. The newest version cannot be withdrawn: release a fixed one, or deprecate the pack.
+- `npm run check` fails on a malformed entry or a `replaced-by` that does not exist. `npm run status` lists what is retired.
+- A pack is only removed before anything is live. Once a version is locked, `registry.lock.json` is append-only and the checks fail if a locked version disappears.
+
+## Testing your pack
+
+You own your pack's tests, and CI runs them (`npm test`). A pack does not pass review until its rules are proven.
+
+- **Common rules need nothing.** `tests/rule-cases.test.mjs` builds a node that should pass and one that should fail from the rule itself, for the usual checks (`require_fields`, `require_link`, `forbid_link`, `field_is` on one field, `any_of`, `acyclic`), and runs them through the engine. It also catches a link type or field that is mistyped.
+- **Anything else needs a test file, and so does any case you want to keep.** If the rule filters on a field, checks another node's fields, compares two fields or uses `same_fields`, `ancestor_type` and the like, the suite fails and names the rule. Add `packs/<pack>/tests/<rule-id>.json`. You can also add one for a rule the suite already covers, to pin an edge you care about (the name limit in bytes, say). This is the one place a pack's failing cases live.
+
+```json
+{
+  "rule": "mcp--rule-remote-authenticated",
+  "cases": [
+    {
+      "name": "a remote server needs an auth, a local one does not",
+      "nodes": [
+        {
+          "id": "srv-ok",
+          "type": "mcp-server",
+          "fields": { "transport": "sse" },
+          "links": [{ "type": "authenticated-by", "to": "auth-1" }]
+        },
+        { "id": "auth-1", "type": "mcp-auth" },
+        { "id": "srv-bare", "type": "mcp-server", "fields": { "transport": "streamable-http" } }
+      ],
+      "pass": ["srv-ok"],
+      "fail": ["srv-bare"]
+    }
+  ]
+}
+```
+
+A case is a small project: the pack and what it requires, plus its `nodes`. `pass` and `fail` list the nodes whose result for this rule is asserted, so one case can hold several. Across the file there must be at least one node that passes and one that fails, and the edges are worth including (a value just under a limit and just over it). A rule with no check only advises: use `"advisory"`. The file is named for the rule and holds data only, so nothing in it runs. Mistakes in the file are reported in plain words.
+
+- **Whole-project examples** live in `packs/<pack>/<version>/examples/` and must check clean (`scripts/check-examples.mjs`).
+
+Run just your pack's tests with `node --test --test-name-pattern="^<pack>" tests/*.test.mjs`.
 
 ## Checking locally
 

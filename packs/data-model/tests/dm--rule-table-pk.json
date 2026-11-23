@@ -1,0 +1,73 @@
+{
+  "rule": "dm--rule-table-pk",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "t1",
+          "type": "data-table",
+          "fields": {},
+          "links": [
+            {
+              "type": "data-contains",
+              "to": "c1"
+            }
+          ]
+        },
+        {
+          "id": "c1",
+          "type": "data-column",
+          "fields": {
+            "primary_key": true
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "t1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "t1",
+          "type": "data-table",
+          "fields": {},
+          "links": [
+            {
+              "type": "data-contains",
+              "to": "c1"
+            }
+          ]
+        },
+        {
+          "id": "c1",
+          "type": "data-column",
+          "fields": {
+            "primary_key": false
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "t1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "t1",
+          "type": "data-table",
+          "fields": {},
+          "links": []
+        }
+      ],
+      "fail": [
+        "t1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "rule": "def--rule-invalidated-assumption-not-relied-on",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "a1",
+          "type": "assumption",
+          "fields": {
+            "state": "invalidated"
+          },
+          "links": []
+        },
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "draft"
+          },
+          "links": [
+            {
+              "type": "relies-on",
+              "to": "a1"
+            }
+          ]
+        }
+      ],
+      "pass": [
+        "a1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "a1",
+          "type": "assumption",
+          "fields": {
+            "state": "invalidated"
+          },
+          "links": []
+        },
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": [
+            {
+              "type": "relies-on",
+              "to": "a1"
+            }
+          ]
+        }
+      ],
+      "fail": [
+        "a1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "rule": "ctr--rule-image-tag-pinned",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "i1",
+          "type": "image",
+          "fields": {
+            "tag": "1.4.2"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "i1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "i1",
+          "type": "image",
+          "fields": {
+            "tag": "latest"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "i1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "i1",
+          "type": "image",
+          "fields": {},
+          "links": []
+        }
+      ],
+      "fail": [
+        "i1"
+      ]
+    }
+  ]
+}

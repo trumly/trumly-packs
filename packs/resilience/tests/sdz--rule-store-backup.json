@@ -1,0 +1,64 @@
+{
+  "rule": "sdz--rule-store-backup",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {
+            "kind": "relational"
+          },
+          "links": [
+            {
+              "type": "backed-up-by",
+              "to": "b1"
+            }
+          ]
+        },
+        {
+          "id": "b1",
+          "type": "backup",
+          "fields": {},
+          "links": []
+        }
+      ],
+      "pass": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {
+            "kind": "relational"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "datastore",
+          "fields": {
+            "kind": "object"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    }
+  ]
+}

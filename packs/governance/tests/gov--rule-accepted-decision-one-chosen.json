@@ -1,0 +1,116 @@
+{
+  "rule": "gov--rule-accepted-decision-one-chosen",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "d1",
+          "type": "decision",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": [
+            {
+              "type": "considers",
+              "to": "o1"
+            },
+            {
+              "type": "considers",
+              "to": "o2"
+            }
+          ]
+        },
+        {
+          "id": "o1",
+          "type": "decision-option",
+          "fields": {
+            "chosen": true
+          },
+          "links": []
+        },
+        {
+          "id": "o2",
+          "type": "decision-option",
+          "fields": {
+            "chosen": false
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "d1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "d1",
+          "type": "decision",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": [
+            {
+              "type": "considers",
+              "to": "o1"
+            },
+            {
+              "type": "considers",
+              "to": "o2"
+            }
+          ]
+        },
+        {
+          "id": "o1",
+          "type": "decision-option",
+          "fields": {
+            "chosen": true
+          },
+          "links": []
+        },
+        {
+          "id": "o2",
+          "type": "decision-option",
+          "fields": {
+            "chosen": true
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "d1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "d1",
+          "type": "decision",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": [
+            {
+              "type": "considers",
+              "to": "o1"
+            }
+          ]
+        },
+        {
+          "id": "o1",
+          "type": "decision-option",
+          "fields": {
+            "chosen": false
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "d1"
+      ]
+    }
+  ]
+}

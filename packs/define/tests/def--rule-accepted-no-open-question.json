@@ -1,0 +1,63 @@
+{
+  "rule": "def--rule-accepted-no-open-question",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": []
+        },
+        {
+          "id": "q1",
+          "type": "question",
+          "fields": {
+            "state": "answered"
+          },
+          "links": [
+            {
+              "type": "about",
+              "to": "r1"
+            }
+          ]
+        }
+      ],
+      "pass": [
+        "r1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": []
+        },
+        {
+          "id": "q1",
+          "type": "question",
+          "fields": {
+            "state": "open"
+          },
+          "links": [
+            {
+              "type": "about",
+              "to": "r1"
+            }
+          ]
+        }
+      ],
+      "fail": [
+        "r1"
+      ]
+    }
+  ]
+}

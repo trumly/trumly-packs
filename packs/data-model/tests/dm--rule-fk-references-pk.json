@@ -1,0 +1,114 @@
+{
+  "rule": "dm--rule-fk-references-pk",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "fk",
+          "type": "data-column",
+          "fields": {
+            "foreign_key": true,
+            "data_type": "int"
+          },
+          "links": [
+            {
+              "type": "data-references",
+              "to": "pk"
+            }
+          ]
+        },
+        {
+          "id": "pk",
+          "type": "data-column",
+          "fields": {
+            "primary_key": true,
+            "data_type": "int"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "fk"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "fk",
+          "type": "data-column",
+          "fields": {
+            "foreign_key": true,
+            "data_type": "int"
+          },
+          "links": [
+            {
+              "type": "data-references",
+              "to": "pk"
+            }
+          ]
+        },
+        {
+          "id": "pk",
+          "type": "data-column",
+          "fields": {
+            "primary_key": true,
+            "data_type": "text"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "fk"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "fk",
+          "type": "data-column",
+          "fields": {
+            "foreign_key": true,
+            "data_type": "int"
+          },
+          "links": [
+            {
+              "type": "data-references",
+              "to": "pk"
+            }
+          ]
+        },
+        {
+          "id": "pk",
+          "type": "data-column",
+          "fields": {
+            "data_type": "int"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "fk"
+      ]
+    },
+    {
+      "name": "fail 3",
+      "nodes": [
+        {
+          "id": "fk",
+          "type": "data-column",
+          "fields": {
+            "foreign_key": true,
+            "data_type": "int"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "fk"
+      ]
+    }
+  ]
+}
