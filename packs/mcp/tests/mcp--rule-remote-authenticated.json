@@ -1,0 +1,106 @@
+{
+  "rule": "mcp--rule-remote-authenticated",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "m1",
+          "type": "mcp-server",
+          "fields": {
+            "transport": "sse"
+          },
+          "links": [
+            {
+              "type": "authenticated-by",
+              "to": "a1"
+            }
+          ]
+        },
+        {
+          "id": "a1",
+          "type": "mcp-auth",
+          "fields": {},
+          "links": []
+        }
+      ],
+      "pass": [
+        "m1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "m1",
+          "type": "mcp-server",
+          "fields": {
+            "transport": "streamable-http"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "m1"
+      ]
+    },
+    {
+      "name": "remote-server-no-auth",
+      "nodes": [
+        {
+          "id": "auth-ok",
+          "type": "mcp-auth",
+          "title": "OAuth",
+          "plane": "mcp--access",
+          "fields": {
+            "scheme": "oauth",
+            "scopes": "x:read"
+          }
+        },
+        {
+          "id": "srv-local",
+          "type": "mcp-server",
+          "title": "local",
+          "plane": "mcp--surface",
+          "fields": {
+            "transport": "stdio",
+            "trust": "first-party"
+          }
+        },
+        {
+          "id": "srv-ok",
+          "type": "mcp-server",
+          "title": "guarded",
+          "plane": "mcp--surface",
+          "fields": {
+            "transport": "streamable-http",
+            "trust": "first-party"
+          },
+          "links": [
+            {
+              "to": "auth-ok",
+              "type": "authenticated-by"
+            }
+          ]
+        },
+        {
+          "id": "srv-remote",
+          "type": "mcp-server",
+          "title": "remote",
+          "plane": "mcp--surface",
+          "fields": {
+            "transport": "streamable-http",
+            "trust": "first-party"
+          }
+        }
+      ],
+      "pass": [
+        "srv-ok"
+      ],
+      "fail": [
+        "srv-remote"
+      ],
+      "note": "a remote server needs an auth; a local stdio server does not"
+    }
+  ]
+}

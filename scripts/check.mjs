@@ -1,7 +1,9 @@
-// node scripts/check.mjs [--update-lock] [--pack]
+// node scripts/check.mjs [--update-lock] [--pack] [--strict]
 // Checks every pack in packs/, the same way the spec site will when it publishes them.
 //   --update-lock  record the checksum of versions that are new (maintainers only, when merging)
 //   --pack         also write dist/packs.tgz: packs/ and registry.lock.json, what the site fetches
+//   --strict       a version that is not locked yet is an error (always on in CI). Locally it is only a note: versions are
+//                  locked when you release (release.sh runs the lock), so you can keep editing an unreleased version freely.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
@@ -11,7 +13,8 @@ import { suspicious } from './agent-text.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const update = process.argv.includes('--update-lock'),
-  pack = process.argv.includes('--pack');
+  pack = process.argv.includes('--pack'),
+  strict = process.argv.includes('--strict') || !!process.env.CI;
 const { versions, errors } = await loadRegistry(root);
 errors.push(...checkLibrary(versions).errors);
 
@@ -50,10 +53,15 @@ if (errors.length) {
 
 const added = Object.keys(next).filter(k => !lock[k]);
 if (added.length && !update) {
-  console.error(
-    `New versions are not locked yet: ${added.join(', ')}\nA maintainer runs: npm run lock (and commits registry.lock.json)`
-  );
-  process.exit(1);
+  if (strict) {
+    console.error(
+      `New versions are not locked yet: ${added.join(', ')}\nA maintainer runs: npm run lock (and commits registry.lock.json)`
+    );
+    process.exit(1);
+  }
+  // not an error while working: the release locks them, and until then they can still change
+  console.log(`${versions.length} pack version(s) checked; unreleased, so not locked yet: ${added.join(', ')}.`);
+  process.exit(0);
 }
 if (added.length)
   writeFileSync(lockPath, JSON.stringify(Object.fromEntries(Object.entries(next).sort()), null, 2) + '\n');

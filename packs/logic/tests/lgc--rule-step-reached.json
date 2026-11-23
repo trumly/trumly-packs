@@ -1,0 +1,50 @@
+{
+  "rule": "lgc--rule-step-reached",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {
+            "kind": "start"
+          },
+          "links": [
+            {
+              "type": "next",
+              "to": "s2"
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "type": "step",
+          "fields": {
+            "kind": "end"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "s2"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "s2",
+          "type": "step",
+          "fields": {
+            "kind": "end"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "s2"
+      ]
+    }
+  ]
+}

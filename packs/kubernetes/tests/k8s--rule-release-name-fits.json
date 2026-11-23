@@ -1,0 +1,133 @@
+{
+  "rule": "k8s--rule-release-name-fits",
+  "cases": [
+    {
+      "name": "release-name-over-limit",
+      "nodes": [
+        {
+          "id": "chart-exact",
+          "type": "chart",
+          "title": "ccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "plane": "k8s--kubernetes"
+        },
+        {
+          "id": "chart-long",
+          "type": "chart",
+          "title": "cccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "plane": "k8s--kubernetes"
+        },
+        {
+          "id": "chart-ok",
+          "type": "chart",
+          "title": "ccc",
+          "plane": "k8s--kubernetes"
+        },
+        {
+          "id": "cluster",
+          "type": "cluster",
+          "title": "Cluster",
+          "plane": "k8s--kubernetes",
+          "fields": {
+            "distribution": "eks"
+          },
+          "links": [
+            {
+              "to": "environment",
+              "type": "runs-in"
+            }
+          ]
+        },
+        {
+          "id": "environment",
+          "type": "environment",
+          "title": "Production",
+          "plane": "dsn--design"
+        },
+        {
+          "id": "namespace",
+          "type": "namespace",
+          "title": "ops",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "cluster",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "release-exact",
+          "type": "release",
+          "title": "rexact",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "chart-exact",
+              "type": "installs"
+            },
+            {
+              "to": "namespace",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "release-long",
+          "type": "release",
+          "title": "rlong",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "chart-long",
+              "type": "installs"
+            },
+            {
+              "to": "namespace",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "release-ok",
+          "type": "release",
+          "title": "rok",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "chart-ok",
+              "type": "installs"
+            },
+            {
+              "to": "namespace",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "token-prd",
+          "type": "name-token",
+          "title": "prd",
+          "plane": "nam--names",
+          "fields": {
+            "slot": "env",
+            "value": "prd"
+          },
+          "links": [
+            {
+              "to": "environment",
+              "type": "stands-for"
+            }
+          ]
+        }
+      ],
+      "pass": [
+        "release-ok",
+        "release-exact"
+      ],
+      "fail": [
+        "release-long"
+      ],
+      "note": "the name is the chart title plus the environment code (chart-prd): 50 letters give 54 characters, over Helm's 53"
+    }
+  ]
+}

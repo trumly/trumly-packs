@@ -1,0 +1,43 @@
+{
+  "rule": "nam--rule-token-points",
+  "cases": [
+    {
+      "name": "token-unpointed",
+      "nodes": [
+        {
+          "id": "tok-bare",
+          "type": "name-token",
+          "title": "app",
+          "plane": "nam--names",
+          "fields": {
+            "slot": "workload",
+            "value": "app"
+          }
+        },
+        {
+          "id": "tok-ok",
+          "type": "name-token",
+          "title": "db",
+          "plane": "nam--names",
+          "fields": {
+            "slot": "kind",
+            "value": "db"
+          },
+          "links": [
+            {
+              "to": "nam--type-name-pattern",
+              "type": "stands-for"
+            }
+          ]
+        }
+      ],
+      "pass": [
+        "tok-ok"
+      ],
+      "fail": [
+        "tok-bare"
+      ],
+      "note": "a token with no stands-for names nothing, so a calculated name can't use it"
+    }
+  ]
+}

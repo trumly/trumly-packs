@@ -1,0 +1,56 @@
+{
+  "rule": "def--rule-accepted-needs-human",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "accepted",
+            "accepted-by": "sam",
+            "accepted-on": "2026-01-02"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "r1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "accepted",
+            "accepted-by": "sam"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "r1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {
+            "status": "accepted"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "r1"
+      ]
+    }
+  ]
+}

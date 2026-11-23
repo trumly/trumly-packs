@@ -1,0 +1,21 @@
+{
+  "rule": "ctr--rule-container-root-advisory",
+  "cases": [
+    {
+      "name": "advisory 1",
+      "nodes": [
+        {
+          "id": "c1",
+          "type": "container",
+          "fields": {
+            "runs-as-root": true
+          },
+          "links": []
+        }
+      ],
+      "advisory": [
+        "c1"
+      ]
+    }
+  ]
+}

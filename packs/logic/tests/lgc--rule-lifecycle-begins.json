@@ -1,0 +1,98 @@
+{
+  "rule": "lgc--rule-lifecycle-begins",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "l1",
+          "type": "lifecycle",
+          "fields": {},
+          "links": [
+            {
+              "type": "begins-at",
+              "to": "s1"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "type": "state",
+          "fields": {
+            "initial": true
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "l1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "l1",
+          "type": "lifecycle",
+          "fields": {},
+          "links": [
+            {
+              "type": "begins-at",
+              "to": "s1"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "type": "state",
+          "fields": {
+            "initial": false
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "l1"
+      ]
+    },
+    {
+      "name": "fail 2",
+      "nodes": [
+        {
+          "id": "l1",
+          "type": "lifecycle",
+          "fields": {},
+          "links": [
+            {
+              "type": "begins-at",
+              "to": "s1"
+            },
+            {
+              "type": "begins-at",
+              "to": "s2"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "type": "state",
+          "fields": {
+            "initial": true
+          },
+          "links": []
+        },
+        {
+          "id": "s2",
+          "type": "state",
+          "fields": {
+            "initial": true
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "l1"
+      ]
+    }
+  ]
+}

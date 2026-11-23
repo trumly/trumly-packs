@@ -1,0 +1,47 @@
+{
+  "rule": "hst--rule-service-name-length",
+  "cases": [
+    {
+      "name": "service-name-over-limit",
+      "nodes": [
+        {
+          "id": "derived-handle",
+          "type": "derived",
+          "title": "Service handle",
+          "fields": {
+            "applies_to": {
+              "type": "cloud-service"
+            },
+            "enabled": true,
+            "field-name": "handle",
+            "name": "service-handle",
+            "template": "{title}"
+          }
+        },
+        {
+          "id": "svc-exact",
+          "type": "cloud-service",
+          "title": "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+        },
+        {
+          "id": "svc-long",
+          "type": "cloud-service",
+          "title": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+        },
+        {
+          "id": "svc-ok",
+          "type": "cloud-service",
+          "title": "app-prd-euw2-db"
+        }
+      ],
+      "pass": [
+        "svc-ok",
+        "svc-exact"
+      ],
+      "fail": [
+        "svc-long"
+      ],
+      "note": "the handle comes from a derived definition the case carries; 63 characters pass, 64 fail"
+    }
+  ]
+}

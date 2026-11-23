@@ -1,0 +1,59 @@
+{
+  "rule": "def--rule-no-requirement-for-out-of-scope",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {},
+          "links": [
+            {
+              "type": "derives-from",
+              "to": "cap"
+            }
+          ]
+        },
+        {
+          "id": "cap",
+          "type": "capability",
+          "fields": {
+            "scope": "in"
+          },
+          "links": []
+        }
+      ],
+      "pass": [
+        "r1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "r1",
+          "type": "requirement",
+          "fields": {},
+          "links": [
+            {
+              "type": "derives-from",
+              "to": "cap"
+            }
+          ]
+        },
+        {
+          "id": "cap",
+          "type": "capability",
+          "fields": {
+            "scope": "out"
+          },
+          "links": []
+        }
+      ],
+      "fail": [
+        "r1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "rule": "lgc--rule-step-stays-in-flow",
+  "cases": [
+    {
+      "name": "pass 1",
+      "nodes": [
+        {
+          "id": "fa",
+          "type": "flow",
+          "fields": {},
+          "links": []
+        },
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {},
+          "links": [
+            {
+              "type": "next",
+              "to": "s2"
+            }
+          ],
+          "parent": "fa"
+        },
+        {
+          "id": "s2",
+          "type": "step",
+          "fields": {},
+          "links": [],
+          "parent": "fa"
+        }
+      ],
+      "pass": [
+        "s1"
+      ]
+    },
+    {
+      "name": "fail 1",
+      "nodes": [
+        {
+          "id": "fa",
+          "type": "flow",
+          "fields": {},
+          "links": []
+        },
+        {
+          "id": "fb",
+          "type": "flow",
+          "fields": {},
+          "links": []
+        },
+        {
+          "id": "s1",
+          "type": "step",
+          "fields": {},
+          "links": [
+            {
+              "type": "next",
+              "to": "s2"
+            }
+          ],
+          "parent": "fa"
+        },
+        {
+          "id": "s2",
+          "type": "step",
+          "fields": {},
+          "links": [],
+          "parent": "fb"
+        }
+      ],
+      "fail": [
+        "s1"
+      ]
+    }
+  ]
+}

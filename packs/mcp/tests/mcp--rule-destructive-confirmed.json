@@ -1,0 +1,67 @@
+{
+  "rule": "mcp--rule-destructive-confirmed",
+  "cases": [
+    {
+      "name": "destructive-unconfirmed",
+      "nodes": [
+        {
+          "id": "tool-bare",
+          "type": "mcp-tool",
+          "title": "delete_all",
+          "plane": "mcp--surface",
+          "fields": {
+            "effect": "destructive"
+          }
+        },
+        {
+          "id": "tool-guarded",
+          "type": "mcp-tool",
+          "title": "purge",
+          "plane": "mcp--surface",
+          "fields": {
+            "confirmation": "in-tool",
+            "effect": "destructive"
+          }
+        },
+        {
+          "id": "tool-none",
+          "type": "mcp-tool",
+          "title": "delete_one",
+          "plane": "mcp--surface",
+          "fields": {
+            "confirmation": "none",
+            "effect": "destructive"
+          }
+        },
+        {
+          "id": "tool-prompted",
+          "type": "mcp-tool",
+          "title": "delete_job",
+          "plane": "mcp--surface",
+          "fields": {
+            "confirmation": "client-prompts",
+            "effect": "destructive"
+          }
+        },
+        {
+          "id": "tool-read",
+          "type": "mcp-tool",
+          "title": "list_jobs",
+          "plane": "mcp--surface",
+          "fields": {
+            "effect": "read"
+          }
+        }
+      ],
+      "pass": [
+        "tool-prompted",
+        "tool-guarded"
+      ],
+      "fail": [
+        "tool-bare",
+        "tool-none"
+      ],
+      "note": "a destructive tool needs a confirmation that is not none; other tools are not asked"
+    }
+  ]
+}

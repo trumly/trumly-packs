@@ -1,0 +1,91 @@
+{
+  "rule": "k8s--rule-names-fit",
+  "cases": [
+    {
+      "name": "names-over-limit",
+      "nodes": [
+        {
+          "id": "cluster",
+          "type": "cluster",
+          "title": "Cluster",
+          "plane": "k8s--kubernetes",
+          "fields": {
+            "distribution": "eks"
+          },
+          "links": [
+            {
+              "to": "environment",
+              "type": "runs-in"
+            }
+          ]
+        },
+        {
+          "id": "environment",
+          "type": "environment",
+          "title": "Production",
+          "plane": "dsn--design"
+        },
+        {
+          "id": "namespace-exact",
+          "type": "namespace",
+          "title": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "cluster",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "namespace-long",
+          "type": "namespace",
+          "title": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "cluster",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "namespace-ok",
+          "type": "namespace",
+          "title": "ops",
+          "plane": "k8s--kubernetes",
+          "links": [
+            {
+              "to": "cluster",
+              "type": "belongs-to"
+            }
+          ]
+        },
+        {
+          "id": "token-prd",
+          "type": "name-token",
+          "title": "prd",
+          "plane": "nam--names",
+          "fields": {
+            "slot": "env",
+            "value": "prd"
+          },
+          "links": [
+            {
+              "to": "environment",
+              "type": "stands-for"
+            }
+          ]
+        }
+      ],
+      "pass": [
+        "namespace-ok",
+        "namespace-exact"
+      ],
+      "fail": [
+        "namespace-long"
+      ],
+      "note": "the name is the title plus the environment code (title-prd), so a 60-letter title gives 64 characters"
+    }
+  ]
+}
