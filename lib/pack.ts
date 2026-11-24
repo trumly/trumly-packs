@@ -435,7 +435,7 @@ export function lint(all: Pack[]): Problem[] {
       if (!DEFINITION_KINDS.includes(k))
         push(
           'error',
-          `“${n.id}” is an ordinary node (type ${k || 'none'}). A pack carries definitions only: types, link types, rules, planes and derived values.`
+          `“${n.id}” is an ordinary node (type ${k || 'none'}). A pack carries definitions only: types, link types, rules, planes and derived fields.`
         );
     }
     if (!p.license.trim())
@@ -513,7 +513,7 @@ export function lint(all: Pack[]): Problem[] {
         if (n.fields.check !== undefined) typesIn(n.fields.check, ts);
         for (const t of ts) missing(what, t);
       } else if (n.type === 'derived') {
-        const what = `The derived value “${name}”`;
+        const what = `The derived field “${name}”`;
         const at = n.fields.applies_to?.type;
         if (typeof at === 'string') missing(what, at);
         for (const l of templateLinks(str(n.fields.template) ?? '')) {
